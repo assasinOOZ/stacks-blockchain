@@ -114,6 +114,7 @@ If your name is in a namespace where names do not expire, then you never need to
         ("can-name-be-registered", "Returns true if the provided name can be registered."),
         ("name-resolve", "Get name registration details."),
         ("get-namespace-properties", "Get namespace properties."),
+        ("can-receive-name", "Returns true if the provided name can be received. That is, if it is not curretly owned, a previous lease is expired, and the name wasn't revoked.")
     ];
 
     let pox_skip_display = vec![
@@ -128,7 +129,6 @@ If your name is in a namespace where names do not expire, then you never need to
         "namespace-revoke-function-price-edition",
         "check-name-ops-preconditions",
         "is-name-in-grace-period",
-        "can-receive-name",
     ];
 
     HashMap::from_iter(vec![
