@@ -114,7 +114,8 @@ If your name is in a namespace where names do not expire, then you never need to
         ("can-name-be-registered", "Returns true if the provided name can be registered."),
         ("name-resolve", "Get name registration details."),
         ("get-namespace-properties", "Get namespace properties."),
-        ("can-receive-name", "Returns true if the provided name can be received. That is, if it is not curretly owned, a previous lease is expired, and the name wasn't revoked.")
+        ("can-receive-name", "Returns true if the provided name can be received. That is, if it is not curretly owned, a previous lease is expired, and the name wasn't revoked."),
+        ("get-name", "Returns a response with the username that belongs to the user if any, otherwise an error ERROR_NOT_FOUND is returned.")
     ];
 
     let pox_skip_display = vec![
