@@ -163,7 +163,7 @@ impl LocalPeer {
         let services = ServiceFlags::RELAY;
 
         info!(
-            "Peer's public key: {}",
+            "Will be authenticating p2p messages with public key: {}",
             Secp256k1PublicKey::from_private(&pkey).to_hex()
         );
 
@@ -819,6 +819,36 @@ impl PeerDB {
         }
     }
 
+    /// Is a peer always allowed?
+    pub fn is_peer_always_allowed(
+        conn: &DBConn,
+        network_id: u32,
+        peer_addr: &PeerAddress,
+        peer_port: u16,
+    ) -> Result<bool, db_error> {
+        match PeerDB::get_peer(conn, network_id, peer_addr, peer_port)? {
+            Some(neighbor) => {
+                if neighbor.allowed < 0 {
+                    return Ok(true);
+                }
+                return Ok(false);
+            }
+            None => {
+                return Ok(false);
+            }
+        }
+    }
+
+    /// Get all always-allowed peers
+    pub fn get_always_allowed_peers(
+        conn: &DBConn,
+        network_id: u32,
+    ) -> Result<Vec<Neighbor>, db_error> {
+        let sql = "SELECT * FROM frontier WHERE allowed < 0 AND network_id = ?1 ORDER BY RANDOM()";
+        let allow_rows = query_rows::<Neighbor, _>(conn, sql, &[&network_id])?;
+        Ok(allow_rows)
+    }
+
     /// Insert or replace a neighbor into a given slot
     pub fn insert_or_replace_peer<'a>(
         tx: &mut Transaction<'a>,
@@ -1313,7 +1343,7 @@ impl PeerDB {
 
         let qry = "SELECT * FROM asn4 WHERE prefix = (?1 & ~((1 << (32 - mask)) - 1)) ORDER BY prefix DESC LIMIT 1".to_string();
         let args = [&addr_u32 as &dyn ToSql];
-        let rows = query_rows::<ASEntry4, _>(conn, &qry.to_string(), &args)?;
+        let rows = query_rows::<ASEntry4, _>(conn, &qry, &args)?;
         match rows.len() {
             0 => Ok(None),
             _ => Ok(Some(rows[0].asn)),

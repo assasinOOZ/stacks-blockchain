@@ -293,7 +293,7 @@ impl<'a> StacksMicroblockBuilder<'a> {
                         &cost_after,
                         &total_budget
                     );
-                    clarity_tx.reset_cost(cost_before.clone());
+                    clarity_tx.reset_cost(cost_before);
                 }
                 _ => {
                     warn!("Error processing TX {}: {}", tx.txid(), e);
@@ -949,7 +949,7 @@ impl StacksBlockBuilder {
         let new_block_hash = MINER_BLOCK_HEADER_HASH.clone();
 
         debug!(
-            "\n\nMiner epoch begin";
+            "Miner epoch begin";
             "miner" => %self.miner_id,
             "chain_tip" => %format!("{}/{}", self.chain_tip.consensus_hash,
                                     self.header.parent_block)
